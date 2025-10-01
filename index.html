@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#667eea">
-    <title>Offshore Wind Tracker</title>
+    <title>Offshore Window Tracker</title>
     <style>
         * {
             margin: 0;
@@ -649,13 +649,22 @@
         .hidden {
             display: none;
         }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 12px;
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-left">
-                <h1>🌊 Offshore Wind</h1>
+                <h1>🌊 Offshore Window 🪟</h1>
                 <p>Track perfect surf conditions</p>
             </div>
             <button class="clear-btn" onclick="clearAll()">🗑️</button>
@@ -688,6 +697,10 @@
                 <div id="inlineResults" class="inline-results"></div>
             </div>
             <div id="cards" class="locations-scroll"></div>
+        </div>
+
+        <div class="footer">
+            ATX Industries 2000
         </div>
 
     </div>
