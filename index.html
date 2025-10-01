@@ -312,6 +312,18 @@
             transform: scale(1.2);
         }
 
+        .map-indicator {
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .map-indicator:hover {
+            transform: scale(1.2);
+        }
+
         .card-title p {
             color: #888;
             font-size: 11px;
@@ -950,6 +962,7 @@
                     <div class="card-header">
                         <div class="card-title">
                             <h2>
+                                <a href="https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lon}" target="_blank" class="map-indicator" title="View on Google Maps">📍</a>
                                 ${loc.name}
                                 ${loc.webcams && loc.webcams.length > 0 ? '<span class="webcam-indicator" onclick="scrollToWebcam(event, ' + idx + ')" title="Webcams available">📹</span>' : ''}
                             </h2>
