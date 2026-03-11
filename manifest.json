@@ -1,0 +1,16 @@
+{
+  "name": "Offshore Window Tracker",
+  "short_name": "OffshoreTracker",
+  "description": "Track perfect offshore wind conditions for surf spots",
+  "start_url": "/offshore-wind-tracker/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f30a.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    }
+  ]
+}

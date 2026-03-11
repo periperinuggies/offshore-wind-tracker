@@ -1039,30 +1039,38 @@
 
                 // Use marine API for surf data (swell, wave height, etc)
                 const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height&start_date=${dateParam}&end_date=${dateParam}&timezone=auto`;
-                const windUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m,weather_code&daily=sunrise,sunset&start_date=${dateParam}&end_date=${dateParam}&timezone=auto`;
+                const windUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m,weather_code&daily=sunrise,sunset&wind_speed_unit=kmh&start_date=${dateParam}&end_date=${dateParam}&timezone=auto`;
 
                 // Previous day
                 const prevUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height&start_date=${prevDateParam}&end_date=${prevDateParam}&timezone=auto`;
-                const prevWindUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m&start_date=${prevDateParam}&end_date=${prevDateParam}&timezone=auto`;
+                const prevWindUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh&start_date=${prevDateParam}&end_date=${prevDateParam}&timezone=auto`;
 
                 // Next day
                 const nextUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height&start_date=${nextDateParam}&end_date=${nextDateParam}&timezone=auto`;
-                const nextWindUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m&start_date=${nextDateParam}&end_date=${nextDateParam}&timezone=auto`;
+                const nextWindUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh&start_date=${nextDateParam}&end_date=${nextDateParam}&timezone=auto`;
 
                 console.log(`Fetching data for ${loc.name}`);
 
-                const [windRes, marineRes, prevWindRes, prevMarineRes, nextWindRes, nextMarineRes] = await Promise.all([
-                    fetch(windUrl), fetch(url),
-                    fetch(prevWindUrl), fetch(prevUrl),
-                    fetch(nextWindUrl), fetch(nextUrl)
+                const results = await Promise.allSettled([
+                    fetch(windUrl).then(r => r.json()),
+                    fetch(url).then(r => r.json()),
+                    fetch(prevWindUrl).then(r => r.json()),
+                    fetch(prevUrl).then(r => r.json()),
+                    fetch(nextWindUrl).then(r => r.json()),
+                    fetch(nextUrl).then(r => r.json())
                 ]);
 
-                const windData = await windRes.json();
-                const marineData = await marineRes.json();
-                const prevWindData = await prevWindRes.json();
-                const prevMarineData = await prevMarineRes.json();
-                const nextWindData = await nextWindRes.json();
-                const nextMarineData = await nextMarineRes.json();
+                const windData = results[0].status === 'fulfilled' ? results[0].value : {};
+                const marineData = results[1].status === 'fulfilled' ? results[1].value : {hourly:{}};
+                const prevWindData = results[2].status === 'fulfilled' ? results[2].value : {hourly:{}};
+                const prevMarineData = results[3].status === 'fulfilled' ? results[3].value : {hourly:{}};
+                const nextWindData = results[4].status === 'fulfilled' ? results[4].value : {hourly:{}};
+                const nextMarineData = results[5].status === 'fulfilled' ? results[5].value : {hourly:{}};
+
+                // Require wind data as minimum — marine data is optional
+                if (!windData.hourly || !windData.hourly.wind_direction_10m) {
+                    throw new Error('Wind data unavailable');
+                }
 
                 console.log(`Data for ${loc.name}:`, {wind: windData, marine: marineData});
 
